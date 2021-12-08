@@ -13,6 +13,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "socket.io": "^2.0.4",
-    "vue-socket-io": "^0.3.2"
+    "vue-socket-io": "^0.3.2",
+    "nodemon": "^2.0.15"
   }
 }
