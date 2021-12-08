@@ -10,6 +10,7 @@ const io = require("socket.io")(http, {
 });
 
 let users = {};
+let sockets = {};
 
 app.get("/", (req, res) => {
   console.log(req);
@@ -30,6 +31,7 @@ io.on("connection", (socket) => {
 
     socket.username = username;
     users[username] = username;
+    sockets[username] = socket.id;
 
     socket.emit("LOGIN", {
       username: socket.username,
@@ -42,11 +44,20 @@ io.on("connection", (socket) => {
   });
 
   // Message events
-  socket.on("newMessage", (message) => {
+  socket.on("newMessage", ({ message, srcUser, dstUser }) => {
     console.log("NEW MESSAGE");
 
-    socket.broadcast.emit("NEW_MESSAGE", socket.username + ": " + message);
-    socket.emit("NEW_MESSAGE", "Yo: " + message);
+    socket.broadcast.emit("NEW_MESSAGE", {
+      message: socket.username + ": " + message,
+      srcUser: dstUser,
+      dstUser: srcUser,
+    });
+
+    socket.emit("NEW_MESSAGE", {
+      message: socket.username + ": " + message,
+      srcUser: srcUser,
+      dstUser: dstUser,
+    });
   });
 
   socket.on("disconnect", () => {

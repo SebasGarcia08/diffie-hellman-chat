@@ -6,7 +6,7 @@
         <hr />
         <li v-for="user in users">
           <b v-if="user == username"> {{ user }} </b>
-          <span v-else> {{ user }} </span>
+          <span v-else @click="$emit('openChat', user)"> {{ user }} </span>
         </li>
       </ul>
       <p v-else>Ningún usuario conectado</p>

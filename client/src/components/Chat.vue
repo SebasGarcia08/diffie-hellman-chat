@@ -9,27 +9,15 @@
       <div class="col-9">
         <h3 v-if="username">Bienvenido {{ username }}</h3>
 
-        <div class="col card">
-          <textarea class="form-control" v-model="message"></textarea>
-        </div>
-
-        <br />
-
-        <button class="btn btn-block btn-info" @click="sendMessage">
-          Enviar mensaje
-        </button>
-
-        <div class="col-md-12">
-          <ul>
-            <li v-for="msg in chat">
-              {{ msg }}
-            </li>
-          </ul>
-        </div>
+        <!-- <div class="chats" v-for="conversationWith in conversations[username]"> -->
+        <conversation
+          :v-if="convOpened"
+          :dstUser="conversationWith"
+        ></conversation>
       </div>
 
       <div class="col-3">
-        <users-sidebar></users-sidebar>
+        <users-sidebar v-on:openChat="openChat($event)"></users-sidebar>
       </div>
     </div>
   </div>
@@ -40,11 +28,14 @@ import Vue from "vue";
 import LoginModal from "./LoginModal.vue";
 import { mapGetters, mapActions } from "vuex";
 import UsersSidebar from "./UsersSidebar.vue";
+import Conversation from "./Conversation.vue";
 export default Vue.extend({
-  components: { LoginModal, UsersSidebar },
+  components: { LoginModal, UsersSidebar, Conversation },
   data() {
     return {
       message: "",
+      convOpened: false,
+      conversationWith: "",
     };
   },
   methods: {
@@ -52,13 +43,26 @@ export default Vue.extend({
     processLogin(username) {
       this.socket_login(username);
     },
-    sendMessage() {
-      this.socket_new_message(this.message);
-      this.message = "";
+    openChat(dstUsername) {
+      this.conversationWith = dstUsername;
+      this.convOpened = true;
+      if (!this.conversations[this.username]) {
+        this.conversations[this.username] = {};
+      }
+      if (!this.conversations[this.username][dstUsername]) {
+        this.conversations[this.username][dstUsername] = [];
+      }
+      if (!this.conversations[dstUsername]) {
+        this.conversations[dstUsername] = {};
+      }
+      if (!this.conversations[dstUsername][this.usernamee]) {
+        this.conversations[dstUsername][this.username] = [];
+      }
+      console.log("hola");
     },
   },
   computed: {
-    ...mapGetters(["chat", "username", "exists"]),
+    ...mapGetters(["username", "exists", "conversations"]),
   },
 });
 </script>
