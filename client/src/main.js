@@ -6,6 +6,7 @@ import Vuex from "vuex";
 
 // Socket Connection
 import VueSocketIO from "vue-socket.io";
+import VueSocketio from "vue-socket.io";
 import SocketIO from "socket.io-client";
 
 import chatModule from "./modules/chat";
@@ -29,6 +30,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     setSocket: (state, socket) => {
+      console.log(socket);
       state.io = socket;
       console.log("socket set");
     }
@@ -41,6 +43,7 @@ const store = new Vuex.Store({
 /* Establish socket connection */
 const socketConnection = SocketIO("http://localhost:5000");
 
+
 Vue.use(
   new VueSocketIO({
     debug: true,
@@ -52,6 +55,8 @@ Vue.use(
     }
   })
 );
+
+
 
 new Vue({
   el: "#app",
