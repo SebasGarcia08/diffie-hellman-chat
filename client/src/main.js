@@ -1,57 +1,64 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
 
-import Vuex from 'vuex';
+import Vuex from "vuex";
 
-import VueSocketIO from 'vue-socket.io';
-import SocketIO from 'socket.io-client';
+// Socket Connection
+import VueSocketIO from "vue-socket.io";
+import SocketIO from "socket.io-client";
 
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import chatModule from "./modules/chat";
+
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
 // Make BootstrapVue available throughout your project
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin
-Vue.use(IconsPlugin)
+Vue.use(IconsPlugin);
 
 Vue.use(Vuex);
 
-
 const store = new Vuex.Store({
   state: {
-    io: {},
+    io: {}
   },
   mutations: {
     setSocket: (state, socket) => {
       state.io = socket;
-      console.log('socket set');
+      console.log("socket set");
     }
   },
   modules: {
+    chatModule
   }
-})
+});
 
 /* Establish socket connection */
-const socketConnection = SocketIO('http://localhost:5000');
+const socketConnection = SocketIO("http://localhost:5000");
 
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: socketConnection,
-  vuex: {
+Vue.use(
+  new VueSocketIO({
+    debug: true,
+    connection: socketConnection,
+    vuex: {
       store,
-      actionPrefix: 'SOCKET_',
-      mutationPrefix: 'SOCKET_'
-  },
-}))
+      actionPrefix: "SOCKET_",
+      mutationPrefix: "SOCKET_"
+    }
+  })
+);
 
 new Vue({
-  el: '#app',
+  el: "#app",
   store,
+  router,
   beforeCreate() {
-    store.commit('setSocket', this.$socket);
+    store.commit("setSocket", this.$socket);
   },
   render: h => h(App)
-})
+});
