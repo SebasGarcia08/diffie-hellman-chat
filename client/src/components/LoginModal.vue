@@ -39,16 +39,16 @@ export default Vue.extend({
       username: "",
     };
   },
-  computed () {
+  computed() {
     username: {
-      get () {
-        return this.$store.chatModules.username;
-      },
-      set (value) {
-        this.$store.commit('SET_USERNAME', username);
-      }
+      // get () {
+      //   return this.$store.chatModules.username;
+      // },
+      // set (value) {
+      //   this.$store.commit('SET_USERNAME', username);
+      // }
     }
-  }
+  },
 });
 </script>
 
@@ -72,7 +72,7 @@ export default Vue.extend({
 
 .modal-container {
   width: 300px;
-  margin: opx auto;
+  margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;

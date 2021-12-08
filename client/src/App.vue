@@ -1,8 +1,12 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png" />
-    <h1>{{ msg }}</h1>
-    <router-view></router-view>
+    <div class="container">
+      <main>
+        <img src="./assets/logo.png" />
+        <h1>{{ msg }}</h1>
+        <router-view></router-view>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -18,31 +22,41 @@ export default {
 </script>
 
 <style>
+body {
+  margin: 0;
+}
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 
-h1,
-h2 {
-  font-weight: normal;
+main {
+  text-align: center;
+  margin-top: 40px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+header {
+  height: 56px;
+  padding: 0 16px 0 24px;
+  background-color: #35495e;
+  color: #fff;
 }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
+header li {
+  list-style: none;
+  margin-top: 15px;
+  float: left;
+  margin-right: 25px;
 }
 
-a {
-  color: #42b983;
+header a {
+  color: white;
+}
+
+header a:hover {
+  color: #fff !important;
 }
 </style>

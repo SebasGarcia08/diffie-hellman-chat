@@ -25,6 +25,7 @@ const chatModule = {
     SOCKET_LOGIN(state, data) {
       state.users = data[0].users;
       state.username = data[0].username;
+      state.exists = false;
     },
     SOCKET_USER_EXISTS(state) {
       state.exists = true;
