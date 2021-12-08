@@ -35,7 +35,7 @@ const store = new Vuex.Store({
 })
 
 /* Establish socket connection */
-const socketConnection = SocketIO('http://localhost:5000');
+const socketConnection = SocketIO('http://localhost:5000', {withCredentials: true});
 
 Vue.use(new VueSocketIO({
   debug: true,
