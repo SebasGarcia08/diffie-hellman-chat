@@ -43,7 +43,6 @@ const store = new Vuex.Store({
 /* Establish socket connection */
 const socketConnection = SocketIO("http://localhost:5000");
 
-
 Vue.use(
   new VueSocketIO({
     debug: true,
@@ -55,8 +54,6 @@ Vue.use(
     }
   })
 );
-
-
 
 new Vue({
   el: "#app",

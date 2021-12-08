@@ -1,26 +1,67 @@
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http, {
+const { SocketAddress } = require("net");
+
+const app = require("express")();
+const http = require("http").Server(app);
+const io = require("socket.io")(http, {
   cors: {
-    origin: 'http://localhost:8080',
+    origin: "http://localhost:8080",
     credentials: true,
-  }
+  },
 });
 
+let users = {};
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   console.log(req);
-  res.send('socket.io server');
+  res.send("socket.io server");
 });
 
-io.on('connection', (socket) => {
-  console.log(socket)
-  console.log('New socket connected');
+io.on("connection", (socket) => {
+  console.log(socket);
+  console.log("New socket connected");
+
+  // Chat events
+  socket.on("login", (username) => {
+    console.log("LOGIN");
+    if (users[username]) {
+      socket.emit("USER_EXISTS");
+      return;
+    }
+
+    socket.username = username;
+    users[username] = username;
+
+    socket.emit("LOGIN", {
+      username: socket.username,
+      users,
+    });
+    socket.broadcast.emit("USER_JOINED", {
+      username: socket.username,
+      users,
+    });
+  });
+
+  // Message events
+  socket.on("newMessage", (message) => {
+    console.log("NEW MESSAGE");
+
+    socket.broadcast.emit("NEW_MESSAGE", socket.username + ": " + message);
+    socket.emit("NEW_MESSAGE", "Yo: " + message);
+  });
+
+  socket.on("disconnect", () => {
+    if (users[socket.username]) {
+      delete users[socket.username];
+      socket.broadcast.emit("USER_LEFT", {
+        username: socket.username,
+        users,
+      });
+    }
+  });
 });
 
-
-http.listen(5000, ()=> {
-  console.log('NANDITO ES UN CANGURO')
+http.listen(5000, () => {
+  console.log("NANDITO ES UN CANGURO");
 });
 
 module.exports = app;

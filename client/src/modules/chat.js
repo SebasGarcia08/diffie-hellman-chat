@@ -23,20 +23,26 @@ const chatModule = {
       state.chat.push(message[0]);
     },
     SOCKET_LOGIN(state, data) {
-      state.users = data[0].users;
-      state.username = data[0].username;
+      console.log("Mut login");
+      console.log(data);
+      state.users = data.users;
+      state.username = data.username;
       state.exists = false;
     },
     SOCKET_USER_EXISTS(state) {
       state.exists = true;
     },
     SOCKET_USER_JOINED(state, data) {
-      state.users = data[0].users;
-      state.chat.push(`Usuario ${data[0].username} ha entrado en la sala`);
+      console.log("Mut user joined");
+      console.log(data);
+      state.users = data.users;
+      state.chat.push(`Usuario ${data.username} ha entrado en la sala`);
     },
     SOCKET_USER_LEFT(state, data) {
-      state.users = data[0].users;
-      state.chat.push(`Usuario ${data[0].username} ha abandonado la sala`);
+      console.log("Mut user left");
+      console.log(data);
+      state.users = data.users;
+      state.chat.push(`Usuario ${data.username} ha abandonado la sala`);
     }
   },
   getters: {

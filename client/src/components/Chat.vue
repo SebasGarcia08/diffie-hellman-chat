@@ -19,6 +19,14 @@
         <button class="btn btn-block btn-info" @click="sendMessage">
           Enviar mensaje
         </button>
+
+        <div class="col-md-12">
+          <ul>
+            <li :v-for="msg in chat">
+              {{ msg }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

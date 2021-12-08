@@ -39,16 +39,16 @@ export default Vue.extend({
       username: "",
     };
   },
-  computed() {
-    username: {
-      // get () {
-      //   return this.$store.chatModules.username;
-      // },
-      // set (value) {
-      //   this.$store.commit('SET_USERNAME', username);
-      // }
-    }
-  },
+  // computed: {
+  //   username: {
+  //     get() {
+  //       return this.$store.chatModules.username;
+  //     },
+  //     set(value) {
+  //       this.$store.commit("SET_USERNAME", value);
+  //     },
+  //   },
+  // },
 });
 </script>
 
