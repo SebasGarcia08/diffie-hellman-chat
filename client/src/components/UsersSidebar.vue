@@ -4,7 +4,7 @@
       <ul v-if="users">
         <li>Usuarios conectados:</li>
         <hr />
-        <li :v-for="user in users">
+        <li v-for="user in users">
           <b v-if="user == username"> {{ user }} </b>
           <span v-else> {{ user }} </span>
         </li>

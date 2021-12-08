@@ -19,8 +19,8 @@ const chatModule = {
     SET_USERNAME(state, username) {
       state.username = username;
     },
-    SOCKET_NEW_USERNAME(state, message) {
-      state.chat.push(message[0]);
+    SOCKET_NEW_MESSAGE(state, message) {
+      state.chat.push(message);
     },
     SOCKET_LOGIN(state, data) {
       console.log("Mut login");

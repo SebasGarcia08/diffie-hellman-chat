@@ -1,6 +1,5 @@
 <template>
   <div class="chat">
-    Chat
     <login-modal
       v-on:login="processLogin($event)"
       v-if="!username || exists"
@@ -22,11 +21,15 @@
 
         <div class="col-md-12">
           <ul>
-            <li :v-for="msg in chat">
+            <li v-for="msg in chat">
               {{ msg }}
             </li>
           </ul>
         </div>
+      </div>
+
+      <div class="col-3">
+        <users-sidebar></users-sidebar>
       </div>
     </div>
   </div>
@@ -36,8 +39,9 @@
 import Vue from "vue";
 import LoginModal from "./LoginModal.vue";
 import { mapGetters, mapActions } from "vuex";
+import UsersSidebar from "./UsersSidebar.vue";
 export default Vue.extend({
-  components: { LoginModal },
+  components: { LoginModal, UsersSidebar },
   data() {
     return {
       message: "",
@@ -50,6 +54,7 @@ export default Vue.extend({
     },
     sendMessage() {
       this.socket_new_message(this.message);
+      this.message = "";
     },
   },
   computed: {

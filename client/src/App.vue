@@ -1,8 +1,12 @@
 <template>
   <div id="app">
+    <header>
+      <ul class="nav">
+        <li class="nav-item">ENCRYPTED CHAT ROOM</li>
+      </ul>
+    </header>
     <div class="container">
       <main>
-        <img src="./assets/logo.png" />
         <h1>{{ msg }}</h1>
         <router-view></router-view>
       </main>
