@@ -3,6 +3,7 @@ import { type } from "os";
 const {
   createDiffieHellman,
   createHash,
+  createDecipheriv
 } = require("crypto");
 
 function getHash(msg) {
@@ -107,7 +108,7 @@ const chatModule = {
       state.secret_key = A;
       console.log("Alice's secret key: " + state.secret_key)
     },
-    SOCKET_NEW_MESSAGE(state, { message, srcUser, dstUser }) {
+    SOCKET_NEW_MESSAGE(state, { message, srcUser, dstUser, iv }) {
       console.log(state.conversations);
       if (!state.conversations[srcUser]) {
         state.conversations[srcUser] = {};
@@ -115,7 +116,15 @@ const chatModule = {
       if (!state.conversations[srcUser][dstUser]) {
         state.conversations[srcUser][dstUser] = [];
       }
-      state.conversations[srcUser][dstUser].push(message);
+
+      console.log("Received IV: " + iv.toString('utf8'));
+      let key = state.secret_key.slice(0, 16) // 16 Bytes == 128 BITS
+      let decipher = createDecipheriv("aes-128-cbc", key, iv);
+      // Encrypted using same algorithm, key and iv.
+      let decrypted = decipher.update(message, 'binary', 'utf8');
+      decrypted += decipher.final('utf8');
+
+      state.conversations[srcUser][dstUser].push(decrypted);
       //state.convOpen = srcUser;
     },
     SOCKET_OPEN_CHAT(state, { message, srcUser, dstUser }) {

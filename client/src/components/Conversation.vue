@@ -26,7 +26,7 @@
 <script>
 import Vue from "vue";
 import { mapGetters, mapActions } from "vuex";
-import { randomFill, createCipheriv } from "crypto";
+import { randomFill, createCipheriv, randomUID } from "crypto";
 
 export default Vue.extend({
   name: "conversation",
@@ -40,29 +40,25 @@ export default Vue.extend({
     ...mapActions(["socket_new_message"]),
     sendEncryptedMessage() {
       let alice_message = this.message;
-      let new_iv = new Uint8Array(16);
-      let new_encrypted = "";
       console.log(this.secret_key);
       let key = this.secret_key.slice(0, 16); // 16 Bytes == 128 BITS
+      let iv = "0123456789012345"; // 16 Bytes == 128 BITS
+      console.log("\nKEY LENGTH:", key.length);
+      // Once we have the key and iv, we can create and use the cipher...
+      const cipher = createCipheriv("aes-128-cbc", key, iv); // Both need to be utf8
 
-      randomFill(new_iv, (err, iv) => {
-        if (err) throw err;
-
-        console.log("\nKEY LENGTH:", key.length);
-        // Once we have the key and iv, we can create and use the cipher...
-        const cipher = createCipheriv("aes-128-cbc", key, iv); // Both need to be utf8
-
-        let encrypted = cipher.update(alice_message, "utf8", "binary");
-        encrypted += cipher.final("binary");
-        let data = {
-          message: encrypted,
-          srcUser: this.username,
-          dstUser: this.dstUser
-        };
-        console.log(this.conversations);
-        this.socket_new_message(data);
-        this.message = "";
-      });
+      let encrypted = cipher.update(alice_message, "utf8", "binary");
+      encrypted += cipher.final("binary");
+      console.log("Sent IV: " + iv.toString("utf8"));
+      let data = {
+        message: encrypted,
+        srcUser: this.username,
+        dstUser: this.dstUser,
+        iv: iv
+      };
+      console.log(this.conversations);
+      this.socket_new_message(data);
+      this.message = "";
     }
   },
   computed: {

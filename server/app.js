@@ -54,13 +54,15 @@ io.on("connection", (socket) => {
   });
 
   // Message events
-  socket.on("newMessage", ({ message, srcUser, dstUser }) => {
+  socket.on("newMessage", ({ message, srcUser, dstUser, iv }) => {
     console.log("NEW MESSAGE");
+    console.log(iv);
 
     socket.broadcast.emit("NEW_MESSAGE", {
-      message: socket.username + ": " + message,
+      message: message,
       srcUser: dstUser,
       dstUser: srcUser,
+      iv: iv
     });
 
     // if()
@@ -71,9 +73,10 @@ io.on("connection", (socket) => {
     // });
 
     socket.emit("NEW_MESSAGE", {
-      message: socket.username + ": " + message,
+      message: message,
       srcUser: srcUser,
       dstUser: dstUser,
+      iv: iv
     });
   });
 
