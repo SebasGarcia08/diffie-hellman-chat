@@ -7,7 +7,7 @@
 
     <div class="row">
       <div class="col-9">
-        <h3 v-if="username">Bienvenido {{ username }}</h3>
+        <h3 v-if="username">Session: {{ username }}</h3>
 
         <!-- <span v-if="diffieHellman"> Encrypting conversation... </span> -->
 
@@ -38,7 +38,7 @@ export default Vue.extend({
       message: "",
       convOpened: false,
       conversationWith: "",
-      diffieHellman: false
+      diffieHellman: false,
     };
   },
   methods: {
@@ -46,7 +46,7 @@ export default Vue.extend({
       "socket_login",
       "socket_new_message",
       "socket_diffieHellman",
-      "socket_send_public_key"
+      "socket_send_public_key",
     ]),
     processLogin(username) {
       this.socket_login(username);
@@ -62,7 +62,7 @@ export default Vue.extend({
       }
       this.socket_diffieHellman({
         dstUser: dstUsername,
-        srcUser: this.username
+        srcUser: this.username,
       });
       // if (!this.conversations[dstUsername]) {
       //   this.conversations[dstUsername] = {};
@@ -70,32 +70,24 @@ export default Vue.extend({
       // if (!this.conversations[dstUsername][this.usernamee]) {
       //   this.conversations[dstUsername][this.username] = [];
       // }
-    }
+    },
   },
   watch: {
     private_key: {
       deep: true,
-      handler: function(newVal, oldVal) {
+      handler: function (newVal, oldVal) {
         console.log("Prop changed");
         if (this.exchange) {
           console.log("WATCH: Sending public key");
           console.log("Public key: " + this.public_key);
           console.log("Receiver: " + this.username); // Should be Sara
           this.socket_send_public_key({
-            public_key: this.public_key
+            public_key: this.public_key,
           });
         }
         //console.log(this.private_key);
-      }
-    }
-    // conversations: {
-    //   deep: true,
-    //   handler: function (newVal, oldVal) {
-    //     console.log("Chat opened");
-    //     this.convOpened = true;
-    //     this.conversationWith = ;
-    //   },
-    // },
+      },
+    },
   },
   computed: {
     ...mapGetters([
@@ -104,14 +96,14 @@ export default Vue.extend({
       "conversations",
       "public_key",
       "exchange",
-      "private_key"
-    ])
+      "private_key",
+    ]),
     // conversations: {
     //   get() {
     //     return this.$store.chatModules.conversations;
     //   },
     // },
-  }
+  },
 });
 </script>
 

@@ -3,17 +3,22 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <h2 class="text-center">Entrar al chat</h2>
+          <h2 class="text-center">Enter Cryptochat</h2>
 
           <span
             class="alert alert-danger"
             v-if="$store.state.chatModule.exists"
           >
-            Usuario ya existe
+            User already exists
           </span>
 
           <div class="modal-header">
-            <input type="text" class="form-control" v-model="username" />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="username"
+              v-model="username"
+            />
           </div>
 
           <div class="modal-footer">

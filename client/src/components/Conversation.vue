@@ -1,11 +1,11 @@
 <template>
   <div class="conversation">
-    {{ dstUser }}
+    Chat with: {{ dstUser }}
 
     <!-- Chat messages -->
     <div class="col-md-12">
       <ul>
-        <li v-for="msg in conversations[username][dstUser]">
+        <li v-for="(msg, idx) in conversations[username][dstUser]" :key="idx">
           {{ msg }}
         </li>
       </ul>
@@ -18,7 +18,7 @@
     <br />
 
     <button class="btn btn-block btn-info" @click="sendEncryptedMessage">
-      Enviar mensaje
+      Send message
     </button>
   </div>
 </template>
@@ -26,7 +26,7 @@
 <script>
 import Vue from "vue";
 import { mapGetters, mapActions } from "vuex";
-import { randomFill, createCipheriv, randomUID } from "crypto";
+import { createCipheriv, randomUID } from "crypto";
 
 export default Vue.extend({
   name: "conversation",
@@ -34,6 +34,7 @@ export default Vue.extend({
   data() {
     return {
       message: "",
+      updater: 0,
     };
   },
   methods: {
@@ -69,6 +70,17 @@ export default Vue.extend({
       console.log(this.conversations);
       this.socket_new_message(data);
       this.message = "";
+      this.updater += 1;
+      this.$nextTick();
+    },
+  },
+  watch: {
+    conversations: {
+      deep: true,
+      handler: function (newVal, oldVal) {
+        console.log("New message on conversation");
+        this.$forceUpdate();
+      },
     },
   },
   computed: {

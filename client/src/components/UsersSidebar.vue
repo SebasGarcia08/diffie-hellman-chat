@@ -2,14 +2,14 @@
   <div class="users-sidebar">
     <div class="card">
       <ul v-if="users">
-        <li>Usuarios conectados:</li>
+        <li>Users connected:</li>
         <hr />
-        <li v-for="user in users">
+        <li v-for="(user, idx) in users" :key="idx">
           <b v-if="user == username"> {{ user }} </b>
           <span v-else @click="$emit('openChat', user)"> {{ user }} </span>
         </li>
       </ul>
-      <p v-else>Ningún usuario conectado</p>
+      <p v-else>No users connected</p>
     </div>
   </div>
 </template>
