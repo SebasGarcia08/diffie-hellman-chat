@@ -21,8 +21,22 @@ const chatModule = {
     },
     SOCKET_NEW_MESSAGE(state, { message, srcUser, dstUser }) {
       console.log(state.conversations);
+      if (!state.conversations[srcUser]) {
+        state.conversations[srcUser] = {};
+      }
+      if (!state.conversations[srcUser][dstUser]) {
+        state.conversations[srcUser][dstUser] = [];
+      }
       state.conversations[srcUser][dstUser].push(message);
-      state.conversations[dstUser][srcUser].push(message);
+    },
+    SOCKET_OPEN_CHAT(state, { message, srcUser, dstUser }) {
+      if (!state.conversations[srcUser]) {
+        state.conversations[srcUser] = {};
+      }
+      if (!state.conversations[srcUser][dstUser]) {
+        state.conversations[srcUser][dstUser] = [];
+      }
+      state.conversations[srcUser][dstUser].push(message);
     },
     SOCKET_LOGIN(state, data) {
       state.users = data.users;

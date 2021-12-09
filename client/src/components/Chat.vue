@@ -52,17 +52,21 @@ export default Vue.extend({
       if (!this.conversations[this.username][dstUsername]) {
         this.conversations[this.username][dstUsername] = [];
       }
-      if (!this.conversations[dstUsername]) {
-        this.conversations[dstUsername] = {};
-      }
-      if (!this.conversations[dstUsername][this.usernamee]) {
-        this.conversations[dstUsername][this.username] = [];
-      }
-      console.log("hola");
+      // if (!this.conversations[dstUsername]) {
+      //   this.conversations[dstUsername] = {};
+      // }
+      // if (!this.conversations[dstUsername][this.usernamee]) {
+      //   this.conversations[dstUsername][this.username] = [];
+      // }
     },
   },
   computed: {
     ...mapGetters(["username", "exists", "conversations"]),
+    // conversations: {
+    //   get() {
+    //     return this.$store.chatModules.conversations;
+    //   },
+    // },
   },
 });
 </script>

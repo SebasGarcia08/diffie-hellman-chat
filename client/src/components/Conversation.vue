@@ -49,7 +49,7 @@ export default Vue.extend({
     },
   },
   computed: {
-    ...mapGetters(["conversations", "username"]),
+    ...mapGetters(["username", "conversations"]),
   },
 });
 </script>

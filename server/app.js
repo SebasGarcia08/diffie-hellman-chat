@@ -53,6 +53,13 @@ io.on("connection", (socket) => {
       dstUser: srcUser,
     });
 
+    // if()
+    // socket.broadcast.emit("OPEN_CHAT", {
+    //   message: socket.username + ": " + message,
+    //   srcUser: dstUser,
+    //   dstUser: srcUser,
+    // });
+
     socket.emit("NEW_MESSAGE", {
       message: socket.username + ": " + message,
       srcUser: srcUser,
