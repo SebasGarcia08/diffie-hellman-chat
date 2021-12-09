@@ -15,7 +15,9 @@ const chatModule = {
     users: [],
     username: null,
     exists: false,
-    diffieHellmanObject: {}
+    diffieHellmanObject: {},
+    secret_key: null,
+    public_key: null
   },
   // emit actions to nodejs from our app
   actions: {
@@ -25,13 +27,12 @@ const chatModule = {
     socket_login: ({ rootState }, username) => {
       rootState.io.emit("login", username);
     },
-    socket_diffieHellman: ({ rootState, commit }, dstUser) => {
+    socket_diffieHellman: ({ rootState, commit }, { dstUser, srcUser }) => {
+      // Sender
       const diffieHellmanObject = createDiffieHellman(256);
       const public_key = diffieHellmanObject.generateKeys("hex"); // This key should be transferred to the other party
       let prime = diffieHellmanObject.getPrime("hex");
       let generator = diffieHellmanObject.getGenerator("hex");
-
-      console.log("prime: " + prime);
 
       let data = {
         diffieHellmanObject: diffieHellmanObject,
@@ -43,7 +44,8 @@ const chatModule = {
         public_key: public_key,
         prime: prime,
         generator: generator,
-        dstUser: dstUser
+        dstUser: dstUser,
+        srcUser: srcUser
       };
       rootState.io.emit("exchange", data_to_send);
     }
@@ -55,6 +57,40 @@ const chatModule = {
     },
     SET_DIFFIEHELLMAN(state, { dstUser, diffieHellmanObject }) {
       state.diffieHellmanObject[dstUser] = diffieHellmanObject;
+    },
+    SOCKET_GENERATE_SECRET_KEY_RECEIVER(state, data) {
+      // Receiver
+      const diffieHellmanObject = createDiffieHellman(
+        data["prime"],
+        "hex",
+        data["generator"],
+        "hex"
+      );
+      const public_key = diffieHellmanObject.generateKeys("hex"); // This key should be transferred to the other party
+      // console.log("public_key_receiver: " + public_key);
+      // console.log("public_key_data: ");
+      // console.log(data["public_key"].toString("hex"));
+
+      const secret_key = diffieHellmanObject.computeSecret(
+        data["public_key"].toString("hex"),
+        "hex"
+      ); // Bobs does this
+
+      state.diffieHellmanObject[data["srcUser"]] = diffieHellmanObject;
+      state.secret_key = secret_key;
+      state.public_key = data["public_key"].toString("hex");
+
+      let data_to_send = { public_key: data["public_key"].toString("hex") };
+
+      // TODO: Send to Socket
+    },
+    SOCKET_GENERATE_SECRET_KEY_SENDER(state, data) {
+      const secret_key = state.diffieHellmanObject.computeSecret(
+        data["public_key"],
+        "hex"
+      );
+
+      state.secret_key = secret_key;
     },
     SOCKET_NEW_MESSAGE(state, { message, srcUser, dstUser }) {
       console.log(state.conversations);

@@ -56,7 +56,10 @@ export default Vue.extend({
       if (!this.conversations[this.username][dstUsername]) {
         this.conversations[this.username][dstUsername] = [];
       }
-      this.socket_diffieHellman(dstUsername);
+      this.socket_diffieHellman({
+        dstUser: dstUsername,
+        srcUser: this.username,
+      });
       // if (!this.conversations[dstUsername]) {
       //   this.conversations[dstUsername] = {};
       // }
@@ -65,8 +68,13 @@ export default Vue.extend({
       // }
     },
   },
+  watch: {
+    secret_key() {
+      console.log("secret_key changed");
+    },
+  },
   computed: {
-    ...mapGetters(["username", "exists", "conversations"]),
+    ...mapGetters(["username", "exists", "conversations", "secret_key"]),
     // conversations: {
     //   get() {
     //     return this.$store.chatModules.conversations;

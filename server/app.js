@@ -21,7 +21,15 @@ io.on("connection", (socket) => {
   console.log(socket);
   console.log("New socket connected");
 
-  socket.on("exchange", ({ public_key, prime, generator, dstUser }) => {});
+  socket.on("exchange", (data) => {
+    let dstUser = data["dstUser"];
+    socket.broadcast.emit("GENERATE_SECRET_KEY_RECEIVER", data);
+    //socket.emit("GENERATE_SECRET_KEY_SENDER", data_to_send);
+  });
+
+  socket.on("secret_key_sender", (data) => {
+    console.log("socket called from mutation");
+  });
 
   // Chat events
   socket.on("login", (username) => {
