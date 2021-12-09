@@ -21,6 +21,8 @@ io.on("connection", (socket) => {
   console.log(socket);
   console.log("New socket connected");
 
+  socket.on("exchange", ({ public_key, prime, generator, dstUser }) => {});
+
   // Chat events
   socket.on("login", (username) => {
     console.log("LOGIN");

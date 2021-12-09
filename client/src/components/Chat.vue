@@ -39,7 +39,11 @@ export default Vue.extend({
     };
   },
   methods: {
-    ...mapActions(["socket_login", "socket_new_message"]),
+    ...mapActions([
+      "socket_login",
+      "socket_new_message",
+      "socket_diffieHellman",
+    ]),
     processLogin(username) {
       this.socket_login(username);
     },
@@ -52,6 +56,7 @@ export default Vue.extend({
       if (!this.conversations[this.username][dstUsername]) {
         this.conversations[this.username][dstUsername] = [];
       }
+      this.socket_diffieHellman(dstUsername);
       // if (!this.conversations[dstUsername]) {
       //   this.conversations[dstUsername] = {};
       // }

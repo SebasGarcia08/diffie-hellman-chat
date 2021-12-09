@@ -1,9 +1,21 @@
+const {
+  createDiffieHellman,
+  scrypt,
+  randomFill,
+  createCipheriv,
+  scryptSync,
+  createDecipheriv,
+  createCipher,
+  createHash
+} = require("crypto");
+
 const chatModule = {
   state: {
     conversations: {}, // messages
     users: [],
     username: null,
-    exists: false
+    exists: false,
+    diffieHellmanObject: {}
   },
   // emit actions to nodejs from our app
   actions: {
@@ -12,12 +24,37 @@ const chatModule = {
     },
     socket_login: ({ rootState }, username) => {
       rootState.io.emit("login", username);
+    },
+    socket_diffieHellman: ({ rootState, commit }, dstUser) => {
+      const diffieHellmanObject = createDiffieHellman(256);
+      const public_key = diffieHellmanObject.generateKeys("hex"); // This key should be transferred to the other party
+      let prime = diffieHellmanObject.getPrime("hex");
+      let generator = diffieHellmanObject.getGenerator("hex");
+
+      console.log("prime: " + prime);
+
+      let data = {
+        diffieHellmanObject: diffieHellmanObject,
+        dstUser: dstUser
+      };
+      commit("SET_DIFFIEHELLMAN", data);
+
+      let data_to_send = {
+        public_key: public_key,
+        prime: prime,
+        generator: generator,
+        dstUser: dstUser
+      };
+      rootState.io.emit("exchange", data_to_send);
     }
   },
   // this mutations will be executed by nodejs, they should start by SOCKET_
   mutations: {
     SET_USERNAME(state, username) {
       state.username = username;
+    },
+    SET_DIFFIEHELLMAN(state, { dstUser, diffieHellmanObject }) {
+      state.diffieHellmanObject[dstUser] = diffieHellmanObject;
     },
     SOCKET_NEW_MESSAGE(state, { message, srcUser, dstUser }) {
       console.log(state.conversations);
