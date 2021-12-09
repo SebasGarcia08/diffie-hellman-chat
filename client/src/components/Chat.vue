@@ -9,6 +9,8 @@
       <div class="col-9">
         <h3 v-if="username">Bienvenido {{ username }}</h3>
 
+        <!-- <span v-if="diffieHellman"> Encrypting conversation... </span> -->
+
         <!-- <div class="chats" v-for="conversationWith in conversations[username]"> -->
         <conversation
           :v-if="convOpened"
@@ -36,6 +38,7 @@ export default Vue.extend({
       message: "",
       convOpened: false,
       conversationWith: "",
+      diffieHellman: false,
     };
   },
   methods: {
@@ -43,6 +46,7 @@ export default Vue.extend({
       "socket_login",
       "socket_new_message",
       "socket_diffieHellman",
+      "socket_send_public_key",
     ]),
     processLogin(username) {
       this.socket_login(username);
@@ -69,12 +73,37 @@ export default Vue.extend({
     },
   },
   watch: {
-    secret_key() {
-      console.log("secret_key changed");
+    private_key: {
+      deep: true,
+      handler: function (newVal, oldVal) {
+        console.log("Prop changed");
+        if (this.exchange) {
+          this.socket_send_public_key({
+            public_key: this.public_key,
+            receiver: this.username,
+          });
+        }
+        //console.log(this.private_key);
+      },
     },
+    // conversations: {
+    //   deep: true,
+    //   handler: function (newVal, oldVal) {
+    //     console.log("Chat opened");
+    //     this.convOpened = true;
+    //     this.conversationWith = ;
+    //   },
+    // },
   },
   computed: {
-    ...mapGetters(["username", "exists", "conversations", "secret_key"]),
+    ...mapGetters([
+      "username",
+      "exists",
+      "conversations",
+      "public_key",
+      "exchange",
+      "private_key",
+    ]),
     // conversations: {
     //   get() {
     //     return this.$store.chatModules.conversations;
