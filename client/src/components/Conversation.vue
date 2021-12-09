@@ -38,11 +38,21 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions(["socket_new_message"]),
+    gen_iv(length) {
+      var text = "";
+      var possible =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      for (var i = 0; i < length; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    },
     sendEncryptedMessage() {
       let alice_message = this.message;
       console.log(this.secret_key);
       let key = this.secret_key.slice(0, 16); // 16 Bytes == 128 BITS
-      let iv = "0123456789012345"; // 16 Bytes == 128 BITS
+      let iv = this.gen_iv(16); // 16 Bytes == 128 BITS
       console.log("\nKEY LENGTH:", key.length);
       // Once we have the key and iv, we can create and use the cipher...
       const cipher = createCipheriv("aes-128-cbc", key, iv); // Both need to be utf8
