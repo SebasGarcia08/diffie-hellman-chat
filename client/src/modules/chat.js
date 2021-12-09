@@ -2,15 +2,14 @@ import { type } from "os";
 
 const {
   createDiffieHellman,
-  scrypt,
-  randomFill,
-  createCipheriv,
-  scryptSync,
-  createDecipheriv,
-  createCipher,
   createHash,
-  DiffieHellman,
 } = require("crypto");
+
+function getHash(msg) {
+  const hash = createHash('sha256');
+  hash.update(msg);
+  return hash.digest('hex');
+}
 
 const chatModule = {
   state: {
@@ -35,7 +34,7 @@ const chatModule = {
     },
     socket_diffieHellman: ({ rootState, commit }, { dstUser, srcUser }) => {
       console.log("Calculating primes and generator...");
-      let dhObj = createDiffieHellman(256);
+      let dhObj = createDiffieHellman(16);
       // Prime
       let p = parseInt(dhObj.getPrime('hex'), 16);
       console.log("Prime: " + p);
@@ -91,6 +90,7 @@ const chatModule = {
       let K_b = Math.pow(generator, b) % prime;
       // Bob's secret key
       let B = Math.pow(K_a, b) % prime;
+      B = getHash(B);
       console.log("Bob's secret key: " + B); 
       state.secret_key = B;
       state.private_key = b;
@@ -103,6 +103,7 @@ const chatModule = {
       let a = state.private_key;
       // Alice's secret key
       let A = Math.pow(K_b, a) % state.prime;
+      A = getHash(A);
       state.secret_key = A;
       console.log("Alice's secret key: " + state.secret_key)
     },
@@ -163,10 +164,13 @@ const chatModule = {
       return state.public_key;
     },
     private_key(state) {
-      return state.public_key;
+      return state.private_key;
     },
     exchange(state) {
       return state.exchange;
+    },
+    secret_key(state) {
+      return state.secret_key;
     }
   }
 };
