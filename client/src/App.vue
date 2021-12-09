@@ -19,7 +19,7 @@ export default {
   name: "app",
   data() {
     return {
-      msg: "Welcome to Your Chat Room!",
+      msg: "Welcome to Your Private Chat!",
     };
   },
 };

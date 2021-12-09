@@ -33,7 +33,7 @@ export default Vue.extend({
   props: ["dstUser"],
   data() {
     return {
-      message: ""
+      message: "",
     };
   },
   methods: {
@@ -49,7 +49,7 @@ export default Vue.extend({
       return text;
     },
     sendEncryptedMessage() {
-      let alice_message = this.message;
+      let alice_message = this.username + ": " + this.message;
       console.log(this.secret_key);
       let key = this.secret_key.slice(0, 16); // 16 Bytes == 128 BITS
       let iv = this.gen_iv(16); // 16 Bytes == 128 BITS
@@ -64,16 +64,16 @@ export default Vue.extend({
         message: encrypted,
         srcUser: this.username,
         dstUser: this.dstUser,
-        iv: iv
+        iv: iv,
       };
       console.log(this.conversations);
       this.socket_new_message(data);
       this.message = "";
-    }
+    },
   },
   computed: {
-    ...mapGetters(["username", "conversations", "secret_key"])
-  }
+    ...mapGetters(["username", "conversations", "secret_key"]),
+  },
 });
 </script>
 
